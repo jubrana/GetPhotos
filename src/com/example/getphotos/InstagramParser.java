@@ -18,45 +18,26 @@ public class InstagramParser implements ServiceParser {
 
 	private final String URL = "https://api.instagram.com/v1/media/"
 			+ "popular?client_id=511ba4a600ab4e139b649f4567760413";
-	private String photoUrl;
-	private String photoAuthor;
-	private String photoTitle;
-	private String type;
-	private URL urlObj;
-	private HttpURLConnection conn;
-	private InputStream stream;
-	private JsonParser parser;
-	private JsonElement jsonElement;
-	private JsonObject jsonObject;
-	private JsonArray jsonData;
-	private String jsonRes = null;
+	
 	private Photos photos;
-	private static InstagramParser instagramObj = null;
-
-	public static InstagramParser getInstance() {
-
-		if (instagramObj == null) {
-			instagramObj = new InstagramParser();
-		}
-		return instagramObj;
-	}
-
-	@Override
-	public Photos getParsedItems() {
-
-		return this.photos;
-	}
 
 	@Override
 	public void parseJSONResponse() {
 
+		String photoUrl;
+		String photoAuthor;
+		String photoTitle;
+		String type;
+		JsonParser parser;
+		JsonElement jsonElement;
+		JsonObject jsonObject;
+		JsonArray jsonData;
+		
 		try {
-
-			getJSONresponse(this.URL);
 
 			photos = Photos.getInstance();
 			parser = new JsonParser();
-			jsonElement = parser.parse(jsonRes);
+			jsonElement = parser.parse(getJSONresponse(this.URL));
 			jsonObject = jsonElement.getAsJsonObject();
 			jsonData = jsonObject.getAsJsonArray("data");
 
@@ -95,8 +76,6 @@ public class InstagramParser implements ServiceParser {
 
 			}
 			
-			this.jsonRes = null;
-			
 			
 		} catch (IOException e) {
 
@@ -107,8 +86,10 @@ public class InstagramParser implements ServiceParser {
 	@Override
 	public String getJSONresponse(String url) throws IOException {
 
-		urlObj = new URL(url);
-		conn = (HttpURLConnection) urlObj.openConnection();
+		URL urlObj = new URL(url);
+		HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
+		InputStream stream;
+		String jsonRes;
 
 		if (conn == null) {
 
@@ -127,7 +108,7 @@ public class InstagramParser implements ServiceParser {
 			return null;
 		}
 
-		this.jsonRes = IOUtils.toString(stream, "UTF-8");
+		jsonRes = IOUtils.toString(stream, "UTF-8");
 		stream.close();
 
 		return jsonRes;

@@ -35,13 +35,6 @@ public interface ServiceParser  {
 
 	
 	/**
-	 * Metoda vraæa parsane podatke fotografija spremljene u objekt Photos
-	 * 
-	 * @return Objekt Photos koji sadrži podatke fotografija 
-	 */
-	Photos getParsedItems();
-	
-	/**
 	 * Metoda parsira JSON response sa zadanog servisa
 	 *
 	 */
